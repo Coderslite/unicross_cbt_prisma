@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model StudentModel {
+  id                String              @id @default(auto()) @map("_id") @db.ObjectId
+  username          String              @unique
+  password          String
+  fullName          String
+  registeredCourses RegisteredCourses[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model LecturerModel {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  username  String         @unique
+  password  String
+  fullName  String
+  courses   CoursesModel[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model CoursesModel {
+  id          String              @id @default(auto()) @map("_id") @db.ObjectId
+  courseCode  String              @unique
+  courseTitle String              @unique
+  lecturerId  String              @db.ObjectId
+  lecturer    LecturerModel       @relation(fields: [lecturerId], references: [id])
+  duration    String
+  questions   QuestionModel[]
+  students    RegisteredCourses[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model RegisteredCourses {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  studentId String?       @db.ObjectId
+  Student   StudentModel? @relation(fields: [studentId], references: [id])
+  courseId String?       @db.ObjectId
+  Courses   CoursesModel? @relation(fields: [courseId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model QuestionModel {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  question  String
+  options   String
+  answer    String
+  type String
+  courseId  String        @db.ObjectId
+  course    CoursesModel? @relation(fields: [courseId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
