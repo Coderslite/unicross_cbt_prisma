@@ -3,7 +3,11 @@ const prisma = require('../prisma/index');
 
 // get all lecturers
 exports.getAllLecturers = async (req, res) => {
-    const allLecturers = await prisma.lecturerModel.findMany().then((result) => {
+    const allLecturers = await prisma.lecturerModel.findMany({
+        include:{
+            coursesToTake:true
+        }
+    }).then((result) => {
         res.json({
             status: true,
             data: result

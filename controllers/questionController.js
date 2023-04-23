@@ -25,24 +25,35 @@ exports.createQuestions = async (req, res) => {
         })
     }
     else {
-        await prisma.questionModel.createMany({
-            data: {
-              question: question,
-              answer: answer,
-              options:options,
-              type: type,
-              courseId: courseId,
+        prisma.coursesModel.findUnique({
+            where:{
+                id:courseId
             }
-        }).then((result) => {
-            res.json({
-                status: true,
-                data: result
+        }).then(async (resp)=>{
+            await prisma.questionModel.createMany({
+                data: {
+                  question: question,
+                  answer: answer,
+                  options:options,
+                  type: type,
+                  courseId: courseId,
+                }
+            }).then((result) => {
+                res.json({
+                    status: true,
+                    data: result
+                })
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    status: false,
+                    message: err,
+                })
             })
-        }).catch(err => {
-            console.log(err);
+        }).catch(err=>{
             res.status(500).send({
-                status: false,
-                message: err,
+                status:false,
+                message:"Course not found"
             })
         })
     }

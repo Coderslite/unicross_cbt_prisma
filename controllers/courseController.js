@@ -25,11 +25,7 @@ exports.createCourse = async (req, res) => {
 }
 
 exports.getAllCourses = async (req,res)=>{
-    await prisma.coursesModel.findMany({
-        include:{
-            students:true
-        }
-    }).then((result) => {
+    await prisma.coursesModel.findMany().then((result) => {
         res.json({
             status: true,
             data: result

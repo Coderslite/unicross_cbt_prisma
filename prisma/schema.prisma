@@ -21,36 +21,43 @@ model StudentModel {
 }
 
 model LecturerModel {
-  id        String         @id @default(auto()) @map("_id") @db.ObjectId
-  username  String         @unique
-  password  String
-  fullName  String
-  courses   CoursesModel[]
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
+  username      String             @unique
+  password      String
+  fullName      String
+  coursesToTake LecuturerCourses[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
 }
 
 model CoursesModel {
-  id          String              @id @default(auto()) @map("_id") @db.ObjectId
-  courseCode  String              @unique
-  courseTitle String              @unique
-  lecturerId  String              @db.ObjectId
-  lecturer    LecturerModel       @relation(fields: [lecturerId], references: [id])
-  duration    String
-  questions   QuestionModel[]
-  students    RegisteredCourses[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  id               String              @id @default(auto()) @map("_id") @db.ObjectId
+  courseCode       String              @unique
+  courseTitle      String              @unique
+  duration         String
+  questions        QuestionModel[]
+  students         RegisteredCourses[]
+  LecuturerCourses LecuturerCourses[]
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+}
+
+model LecuturerCourses {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  lecturerId    String         @db.ObjectId
+  courseId      String         @db.ObjectId
+  course        CoursesModel   @relation(fields: [courseId], references: [id])
+  Lecturer LecturerModel? @relation(fields: [lecturerId], references: [id])
 }
 
 model RegisteredCourses {
-  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
   studentId String?       @db.ObjectId
   Student   StudentModel? @relation(fields: [studentId], references: [id])
-  courseId String?       @db.ObjectId
+  courseId  String?       @db.ObjectId
   Courses   CoursesModel? @relation(fields: [courseId], references: [id])
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }
 
 model QuestionModel {
@@ -58,7 +65,7 @@ model QuestionModel {
   question  String
   options   String
   answer    String
-  type String
+  type      String
   courseId  String        @db.ObjectId
   course    CoursesModel? @relation(fields: [courseId], references: [id])
   createdAt DateTime      @default(now())

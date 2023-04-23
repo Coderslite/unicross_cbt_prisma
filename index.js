@@ -5,6 +5,7 @@ const courseRoutes = require('./routes/courseRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const registeredCoursesRoutes = require('./routes/registeredCoursesRoute');
 const questionRoutes = require('./routes/questionRoutes');
+const lectureCoursesRoutes = require('./routes/assignLecturerToCourseRoutes');
 require('dotenv').config();
 
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
  app.use('/api',studentRoutes);
  app.use('/api',registeredCoursesRoutes);
  app.use('/api',questionRoutes);
+ app.use('/api',lectureCoursesRoutes)
 
  app.listen(3000,()=>{
     console.log("listening to port 3000");

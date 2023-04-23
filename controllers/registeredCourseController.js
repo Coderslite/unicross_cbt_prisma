@@ -33,20 +33,31 @@ exports.registeredCourses = async(req,res)=>{
     })
  }
  else{
-    await prisma.registeredCourses.create({
-      data:{
-        courseId:courseId,
-        studentId:studentId
-      },
-    }).then((result)=>{
-        res.json({
-            status:true,
-            message:result,
-        })
+    prisma.coursesModel.findUnique({
+        where:{
+            courseId
+        }
+    }).then(async(resp)=>{
+        await prisma.registeredCourses.create({
+            data:{
+              courseId:courseId,
+              studentId:studentId
+            },
+          }).then((result)=>{
+              res.json({
+                  status:true,
+                  message:result,
+              })
+          }).catch(err=>{
+              res.status(500).send({
+                  status:false,
+                  message:err
+              })
+          })
     }).catch(err=>{
         res.status(500).send({
             status:false,
-            message:err
+            message:"Course no found",
         })
     })
  }
